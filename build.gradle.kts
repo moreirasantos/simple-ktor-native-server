@@ -1,5 +1,3 @@
-import io.ktor.plugin.features.*
-
 val ktorVersion = "2.3.1"
 val psql_driver_version = "0.0.7"
 val kotlinx_serialization_version = "1.4.0"
@@ -66,14 +64,10 @@ kotlin {
 
                 // Fix for kotlinx serialization version sync bug
                 // https://github.com/hfhbd/postgres-native-sqldelight/issues/100
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinx_serialization_version") {
-                    version { strictly(kotlinx_serialization_version) }
-                }
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization_version") {
-                    version { strictly(kotlinx_serialization_version) }
-                }
-
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
             }
+
         }
         val nativeTest by getting {
             dependencies {
@@ -84,7 +78,7 @@ kotlin {
     }
 }
 
-java{
+java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 

@@ -59,7 +59,8 @@ fun Application.module(userService: UserService, pokemonService: PokemonService)
         }
 
         get("/users") {
-            call.respond(userService.list())
+//            call.respond(userService.list())
+            call.respond(userService.knooqList())
         }
         get("/pokemon") {
             call.respond(pokemonService.ditto())
