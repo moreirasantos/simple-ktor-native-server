@@ -1,24 +1,27 @@
 package service
 
-import app.softwork.sqldelight.postgresdriver.PostgresNativeDriver
-import kotlinx.coroutines.flow.toList
+import io.github.miguelmoreira.pgkn.PostgresDriver
+import knooq.Database
+import knooq.UserTable
 import kotlinx.serialization.Serializable
 
-class UserService(private val driver: PostgresNativeDriver) {
-    suspend fun list() = driver.executeQueryAsFlow(
-        identifier = null,
-        sql = "SELECT * FROM users",
-        parameters = 0,
-        binders = null,
-        fetchSize = 100,
-        mapper = {
-            User(
-                id = it.getLong(0)!!,
-                name = it.getString(1)!!,
-                email = it.getString(2)!!
-            )
-        }
-    ).toList()
+class UserService(private val driver: PostgresDriver) {
+    val db: Database = Database(driver)
+
+    suspend fun list() = driver.execute("SELECT * FROM users") {
+        User(
+            id = it.getLong(0)!!,
+            name = it.getString(1)!!,
+            email = it.getString(2)!!
+        )
+    }
+
+    suspend fun knooqList(): List<User> = db.select(UserTable.fields)
+        .from(UserTable)
+        .fetch()
+        .intoClass(UserTable)
+        .also { println("Knooq list") }
+
 }
 
 @Serializable

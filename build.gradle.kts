@@ -1,18 +1,14 @@
-import io.ktor.plugin.features.*
-
 val ktorVersion = "2.3.1"
-val psql_driver_version = "0.0.7"
 val kotlinx_serialization_version = "1.4.0"
 
 plugins {
-    val kotlinVersion = "1.8.21"
+    val kotlinVersion = "1.9.0"
     val ktorVersion = "2.3.1"
     application
     kotlin("multiplatform") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
     id("io.ktor.plugin") version ktorVersion
-    id("app.cash.sqldelight") version "2.0.0-alpha04"
 }
 
 group = "me.miguel"
@@ -21,14 +17,6 @@ version = "1.0-SNAPSHOT"
 repositories {
     google()
     mavenCentral()
-}
-
-sqldelight {
-    database("NativePostgres") {
-        dialect("app.softwork:postgres-native-sqldelight-dialect:$psql_driver_version")
-        packageName = "com.nativeserver.sqldelight"
-    }
-    linkSqlite = false
 }
 
 kotlin {
@@ -62,18 +50,14 @@ kotlin {
                 implementation("io.ktor:ktor-client-curl:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-                implementation("app.softwork:postgres-native-sqldelight-driver:$psql_driver_version")
+                implementation("io.github.moreirasantos:pgkn:1.0.0")
 
                 // Fix for kotlinx serialization version sync bug
                 // https://github.com/hfhbd/postgres-native-sqldelight/issues/100
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinx_serialization_version") {
-                    version { strictly(kotlinx_serialization_version) }
-                }
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization_version") {
-                    version { strictly(kotlinx_serialization_version) }
-                }
-
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
             }
+
         }
         val nativeTest by getting {
             dependencies {
@@ -84,7 +68,7 @@ kotlin {
     }
 }
 
-java{
+java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 

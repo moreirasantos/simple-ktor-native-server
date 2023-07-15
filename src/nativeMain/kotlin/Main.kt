@@ -1,5 +1,4 @@
-import app.softwork.sqldelight.postgresdriver.ListenerSupport
-import app.softwork.sqldelight.postgresdriver.PostgresNativeDriver
+import io.github.miguelmoreira.pgkn.PostgresDriver
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -20,16 +19,13 @@ var job: CompletableJob? = null
 
 fun main() {
     runBlocking {
-        val driver = PostgresNativeDriver(
+        val driver = PostgresDriver(
             host = "host.docker.internal",
             port = 5432,
             user = "postgres",
             database = "postgres",
             password = "postgres",
-            options = null,
-            listenerSupport = ListenerSupport.Remote(this)
         )
-
 
         embeddedServer(
             factory = CIO,
@@ -59,7 +55,8 @@ fun Application.module(userService: UserService, pokemonService: PokemonService)
         }
 
         get("/users") {
-            call.respond(userService.list())
+//            call.respond(userService.list())
+            call.respond(userService.knooqList())
         }
         get("/pokemon") {
             call.respond(pokemonService.ditto())
