@@ -1,5 +1,8 @@
 package knooq
 
+import io.github.moreirasantos.Field
+import io.github.moreirasantos.SQLDataType
+import io.github.moreirasantos.Table
 import service.User
 
 

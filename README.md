@@ -30,6 +30,6 @@ docker clean runDebugExecutableNative
 
 ## Upcoming Features
 1. [PGKN](https://github.com/moreirasantos/pgkn) - Simple PostgreSQL driver agnostic of any ORM
-2. Knooq - inspired by [jOOQ](https://www.jooq.org/), a much smaller,
+2. [knOOQ](https://github.com/moreirasantos/knooq) - inspired by [jOOQ](https://www.jooq.org/), a much smaller,
 less generic DB oriented library for Kotlin Native to make simple Database interactions.
 
