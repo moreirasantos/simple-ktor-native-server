@@ -1,11 +1,10 @@
 package knooq
 
-import app.softwork.sqldelight.postgresdriver.PostgresNativeDriver
-import kotlinx.coroutines.flow.toList
+import io.github.miguelmoreira.pgkn.PostgresDriver
 
 
-class Config(val driver: PostgresNativeDriver)
-class Database(driver: PostgresNativeDriver) {
+class Config(val driver: PostgresDriver)
+class Database(driver: PostgresDriver) {
     private val config: Config = Config(driver)
 
     fun select(fields: List<Field<*>>) = Builder<Record>(config).select(fields)
@@ -93,7 +92,6 @@ sealed class Query(private val config: Config) {
     private suspend fun execute(): Int {
         // A super simple render for now
 
-
         val sql = buildString {
             append("select ")
             // TODO Default value is bad, let's make name non-nullable in some way
@@ -102,22 +100,12 @@ sealed class Query(private val config: Config) {
             append(" from ${from.first().name}")
         }
 
+        result = config.driver.execute(sql) {
+            Record.DbRecord(
+                fields = fields,
+                values = List(fields.size) { index -> it.getString(index) })
+        }.let(::InternalResult)
 
-        result = config.driver.executeQueryAsFlow(
-            identifier = null,
-            sql = sql,
-            parameters = 0,
-            binders = null,
-            fetchSize = 100,
-            mapper = {
-                Record.DbRecord(
-                    fields = fields,
-                    values = List(fields.size) { index -> it.getString(index) })
-            }
-        ).toList()
-            .let {
-                InternalResult(it)
-            }
         return 1
     }
 
@@ -190,21 +178,19 @@ sealed interface Record {
     }
 }
 
-class DSL {
-    companion object {
-        fun condition(operator: Operator, left: Condition, right: Condition): Condition = when {
-            left is NoCondition -> right
-            right is NoCondition -> left
-            else -> CombinedCondition(operator, left, right)
-        }
+object DSL {
+    fun condition(operator: Operator, left: Condition, right: Condition): Condition = when {
+        left is NoCondition -> right
+        right is NoCondition -> left
+        else -> CombinedCondition(operator, left, right)
+    }
 
-        val NO_CONDITION: Condition = NoCondition
-        fun <T : Any> `val`(value: Any, field: Field<T>) = `val`(value, field.dataType)
-        fun <T : Any> `val`(value: Any, type: DataType<T>) = Val(type.convert(value), type, null)
+    val NO_CONDITION: Condition = NoCondition
+    fun <T : Any> `val`(value: Any, field: Field<T>) = `val`(value, field.dataType)
+    fun <T : Any> `val`(value: Any, type: DataType<T>) = Val(type.convert(value), type, null)
 
-        fun <T : Any> inline(value: Any, type: DataType<T>) = Val(type.convert(value), type, null).apply {
-            this.inline = true
-        }
+    fun <T : Any> inline(value: Any, type: DataType<T>) = Val(type.convert(value), type, null).apply {
+        this.inline = true
     }
 }
 
