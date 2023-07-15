@@ -1,7 +1,7 @@
 package service
 
 import io.github.miguelmoreira.pgkn.PostgresDriver
-import knooq.Database
+import io.github.moreirasantos.Database
 import knooq.UserTable
 import kotlinx.serialization.Serializable
 

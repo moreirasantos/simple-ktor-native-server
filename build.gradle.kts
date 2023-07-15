@@ -50,7 +50,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-curl:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-                implementation("io.github.moreirasantos:pgkn:1.0.0")
+                implementation("io.github.moreirasantos:knooq:1.0.0")
 
                 // Fix for kotlinx serialization version sync bug
                 // https://github.com/hfhbd/postgres-native-sqldelight/issues/100
