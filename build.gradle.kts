@@ -2,7 +2,7 @@ val ktorVersion = "2.3.1"
 val kotlinx_serialization_version = "1.4.0"
 
 plugins {
-    val kotlinVersion = "1.9.0"
+    val kotlinVersion = "1.9.21"
     val ktorVersion = "2.3.1"
     application
     kotlin("multiplatform") version kotlinVersion
@@ -50,7 +50,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-curl:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-                implementation("io.github.moreirasantos:knooq:1.0.0")
+                implementation("io.github.moreirasantos:knooq:1.0.2")
 
                 // Fix for kotlinx serialization version sync bug
                 // https://github.com/hfhbd/postgres-native-sqldelight/issues/100
