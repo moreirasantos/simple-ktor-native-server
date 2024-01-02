@@ -1,4 +1,4 @@
-import io.github.miguelmoreira.pgkn.PostgresDriver
+import io.github.moreirasantos.pgkn.PostgresDriver
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -6,25 +6,29 @@ import io.ktor.server.engine.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.toKString
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import platform.posix.exit
+import platform.posix.getenv
 import service.PokemonService
 import service.UserService
 
 var job: CompletableJob? = null
 
 
+@OptIn(ExperimentalForeignApi::class)
 fun main() {
     runBlocking {
         val driver = PostgresDriver(
-            host = "host.docker.internal",
-            port = 5432,
-            user = "postgres",
-            database = "postgres",
-            password = "postgres",
+            host = getenv("PG_HOST")?.toKString() ?: "localhost",
+            port = getenv("PG_PORT")?.toKString()?.takeIf { it.isNotEmpty() }?.toInt() ?: 5432,
+            user = getenv("PG_USER")?.toKString() ?: "postgres",
+            database = getenv("PG_DATABASE")?.toKString() ?: "postgres",
+            password = getenv("PG_PASSWORD")?.toKString() ?: "postgres",
         )
 
         embeddedServer(

@@ -1,7 +1,7 @@
 package service
 
-import io.github.miguelmoreira.pgkn.PostgresDriver
-import io.github.moreirasantos.Database
+import io.github.moreirasantos.knooq.Database
+import io.github.moreirasantos.pgkn.PostgresDriver
 import knooq.UserTable
 import kotlinx.serialization.Serializable
 
@@ -20,7 +20,6 @@ class UserService(private val driver: PostgresDriver) {
         .from(UserTable)
         .fetch()
         .intoClass(UserTable)
-        .also { println("Knooq list") }
 
 }
 
