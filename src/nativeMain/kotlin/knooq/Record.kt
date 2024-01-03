@@ -1,7 +1,7 @@
 package knooq
 
-import io.github.moreirasantos.Field
-import io.github.moreirasantos.Record
+import io.github.moreirasantos.knooq.Field
+import io.github.moreirasantos.knooq.Record
 import service.User
 
 class UserRecord : Record.DataRecord<User> {

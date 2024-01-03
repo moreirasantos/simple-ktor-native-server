@@ -33,3 +33,24 @@ docker clean runDebugExecutableNative
 2. [knOOQ](https://github.com/moreirasantos/knooq) - inspired by [jOOQ](https://www.jooq.org/), a much smaller,
 less generic DB oriented library for Kotlin Native to make simple Database interactions.
 
+
+```kotlin
+fun main() {
+    val driver = PostgresDriver(
+        host = "host.docker.internal",
+        port = 5432,
+        user = "postgres",
+        database = "postgres",
+        password = "postgres",
+    )
+
+    driver.execute("CREATE TABLE my_table(id serial primary key)")
+    val list = driver.execute("SELECT * FROM users") {
+        mapOf(
+            "id" to it.getLong(0),
+            "name" to it.getString(1),
+            "email" to it.getString(2),
+        )
+    }
+}
+```
