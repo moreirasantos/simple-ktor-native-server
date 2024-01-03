@@ -10,6 +10,16 @@ provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+module "kube" {
+  source = "./modules/kube-prometheus"
+  kube-version = "36.2.0"
+}
 
 resource "kubernetes_namespace" "knative" {
   metadata {
@@ -42,6 +52,8 @@ resource "kubernetes_deployment" "postgres" {
           port {
             container_port = 5432
           }
+          // 10 replicas with 20 connections by default = 200, + a little padding
+          args = ["-c", "max_connections=300"]
           env {
             name  = "POSTGRES_PASSWORD"
             value = "postgres"
@@ -77,7 +89,7 @@ resource "kubernetes_deployment" "knative" {
     namespace = kubernetes_namespace.knative.metadata.0.name
   }
   spec {
-    replicas = 4
+    replicas = 10
     selector {
       match_labels = {
         app = "KNativeApp"
